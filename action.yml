@@ -10,7 +10,8 @@ inputs:
   debug:
     description: 'Display debug logs during Flow Execution'
     required: false
-    default: 'false'
+    default: false
+    type: boolean
 runs:
     using: "composite"
     steps:
@@ -18,7 +19,7 @@ runs:
         env:
           CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
         run: |
-          if [ "${{ inputs.debug }}" = "true" ]; then
+          if ${{ inputs.debug }}; then
             cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} --debug | tee cumulusci-flow.log
           else
             cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} | tee cumulusci-flow.log
