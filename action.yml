@@ -7,6 +7,10 @@ inputs:
   flow-name:
     description: 'Name of the Cumulus flow to execute'
     required: true
+  debug:
+    description: 'Display debug logs during Flow Execution'
+    required: false
+    default: 'false'
 runs:
     using: "composite"
     steps:
@@ -14,5 +18,9 @@ runs:
         env:
           CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
         run: |
-          cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} | tee cumulusci-flow.log
+          if [ "${{ inputs.debug }}" = "true" ]; then
+            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} --debug | tee cumulusci-flow.log
+          else
+            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} | tee cumulusci-flow.log
+          fi
         shell: bash
