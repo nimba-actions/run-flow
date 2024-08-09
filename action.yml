@@ -7,6 +7,9 @@ inputs:
   flow-name:
     description: 'Name of the Cumulus flow to execute'
     required: true
+  flow-options:
+    description: 'Options for the Cumulus flow to include'
+    required: false
   debug:
     description: 'Display debug logs during Flow Execution'
     required: false
@@ -20,8 +23,8 @@ runs:
           CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
         run: |
           if ${{ inputs.debug }}; then
-            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} --debug | tee cumulusci-flow.log
+            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} ${{ inputs.flow-options }} --debug | tee cumulusci-flow.log
           else
-            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} | tee cumulusci-flow.log
+            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} ${{ inputs.flow-options }} | tee cumulusci-flow.log
           fi
         shell: bash
