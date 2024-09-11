@@ -16,24 +16,19 @@ inputs:
     default: false
     type: boolean
 runs:
-    using: "composite"
-    steps:
-      - name: Run Flow
-        env:
-          CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
-        shell: bash
-        run: |
-          FLOW_OPTIONS=""
-          if [ -n "${{ inputs.flow-options }}" ]; then
-            for option in ${{ inputs.flow-options }}; do
-              KEY=$(echo $option | cut -d'=' -f1)
-              VALUE=$(echo $option | cut -d'=' -f2)
-              FLOW_OPTIONS="$FLOW_OPTIONS -o $KEY $VALUE"
-            done
-          fi
-        
-          if ${{ inputs.debug }}; then
-            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} $FLOW_OPTIONS --debug | tee cumulusci-flow.log
-          else
-            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} $FLOW_OPTIONS | tee cumulusci-flow.log
-          fi
+  using: "composite"
+  steps:
+    - name: Run Flow
+      env:
+        CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
+      shell: bash
+      run: |
+        FLOW_OPTIONS="${{ inputs.flow-options }}"
+
+        echo "Flow options: $FLOW_OPTIONS"
+
+        if ${{ inputs.debug }}; then
+          cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} $FLOW_OPTIONS --debug | tee cumulusci-flow.log
+        else
+          cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} $FLOW_OPTIONS | tee cumulusci-flow.log
+        fi
