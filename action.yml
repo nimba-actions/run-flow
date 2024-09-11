@@ -23,8 +23,8 @@ runs:
           CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
         run: |
           if ${{ inputs.debug }}; then
-            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} "${{ inputs.flow-options }}" --debug | tee cumulusci-flow.log
+            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} ${{ inputs.flow-options }} --debug | tee cumulusci-flow.log
           else
-            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} "${{ inputs.flow-options }}" | tee cumulusci-flow.log
+            cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} ${{ inputs.flow-options }} | tee cumulusci-flow.log
           fi
         shell: bash
