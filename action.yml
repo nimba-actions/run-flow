@@ -24,9 +24,9 @@ runs:
       shell: bash
       run: |
         FLOW_OPTIONS=""
-        if [ -n "${{ inputs.flow-options }}" ]; then
+        INPUT='${{ inputs.flow-options }}'
+        if [ -n "$INPUT" ]; then
           # Parse the input 'key="value"' safely
-          INPUT="${{ inputs.flow-options }}"
           KEY=${INPUT%%=*}
           VALUE=${INPUT#*=}
           # Remove surrounding quotes if present
