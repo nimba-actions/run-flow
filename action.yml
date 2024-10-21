@@ -8,7 +8,7 @@ inputs:
     description: 'Name of the Cumulus flow to execute'
     required: true
   flow-options:
-    description: 'Options for the Cumulus flow to include'
+    description: 'Options for the Cumulus flow to include (format: key="value")'
     required: false
   debug:
     description: 'Display debug logs during Flow Execution'
@@ -25,14 +25,17 @@ runs:
       run: |
         FLOW_OPTIONS=""
         if [ -n "${{ inputs.flow-options }}" ]; then
-          # Convert input 'key=value' into '-o key value'
-          KEY=$(echo "${{ inputs.flow-options }}" | cut -d'=' -f1)
-          VALUE=$(echo "${{ inputs.flow-options }}" | cut -d'=' -f2)
-          FLOW_OPTIONS="-o $KEY $VALUE"
+          # Parse the input 'key="value"' safely
+          INPUT="${{ inputs.flow-options }}"
+          KEY=${INPUT%%=*}
+          VALUE=${INPUT#*=}
+          # Remove surrounding quotes if present
+          VALUE="${VALUE#\"}"
+          VALUE="${VALUE%\"}"
+          FLOW_OPTIONS="-o $KEY \"$VALUE\""
         fi
         
         echo "Flow options: $FLOW_OPTIONS"
-
         if ${{ inputs.debug }}; then
           cci flow run ${{ inputs.flow-name }} --org ${{ inputs.org-name }} $FLOW_OPTIONS --debug | tee cumulusci-flow.log
         else
