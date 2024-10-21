@@ -26,8 +26,9 @@ runs:
         FLOW_OPTIONS=()
         if [ -n "${{ inputs.flow-options }}" ]; then
           # Split the input at the first '=' sign
-          KEY="${{ inputs.flow-options }%%=*}"
-          VALUE="${{ inputs.flow-options }}#*=}"
+          INPUT="${{ inputs.flow-options }}"
+          KEY=${INPUT%%=*}
+          VALUE=${INPUT#*=}
           # Remove surrounding quotes if present
           VALUE="${VALUE#\"}"
           VALUE="${VALUE%\"}"
