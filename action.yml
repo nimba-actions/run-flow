@@ -24,19 +24,19 @@ runs:
       shell: bash
       run: |
         declare -a FLOW_OPTIONS=()
-        if [ -n "${{ inputs.flow-options }}" ]; then
+        if [[ -n "${{ inputs.flow-options }}" ]]; then
           # Parse the input string carefully
-          INPUT='${{ inputs.flow-options }}'
+          INPUT="${{ inputs.flow-options }}"
           KEY="${INPUT%%=*}"
           VALUE="${INPUT#*=}"
           
           # Handle the quoted value properly
-          if [[ $VALUE == \"*\" ]]; then
+          if [[ "$VALUE" == \"*\" ]]; then
             VALUE="${VALUE:1:-1}"  # Remove outer quotes
           fi
           
           # Only add options if we have both key and value
-          if [ -n "$KEY" ] && [ -n "$VALUE" ]; then
+          if [[ -n "$KEY" ]] && [[ -n "$VALUE" ]]; then
             FLOW_OPTIONS=(-o "$KEY" "$VALUE")
           fi
         fi
