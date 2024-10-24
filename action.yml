@@ -24,29 +24,18 @@ runs:
       shell: bash
       run: |
         declare -a FLOW_OPTIONS=()
-        if [[ -n "${{ inputs.flow-options }}" ]]; then
-          # Parse the input string carefully
-          INPUT="${{ inputs.flow-options }}"
-          KEY="${INPUT%%=*}"
-          VALUE="${INPUT#*=}"
-          
-          # Handle the quoted value properly
-          if [[ "$VALUE" == \"*\" ]]; then
-            VALUE="${VALUE:1:-1}"  # Remove outer quotes
-          fi
-          
-          # Only add options if we have both key and value
-          if [[ -n "$KEY" ]] && [[ -n "$VALUE" ]]; then
-            FLOW_OPTIONS=(-o "$KEY" "$VALUE")
-          fi
+        if [ -n "${{ inputs.flow-options }}" ]; then
+          # Read the flow-options into an array, splitting on newlines
+          IFS=$'\n' read -rd '' -a FLOW_OPTIONS_ARRAY <<<"${{ inputs.flow-options }}"
+          for option in "${FLOW_OPTIONS_ARRAY[@]}"; do
+            # Append each option to the FLOW_OPTIONS array with -o
+            FLOW_OPTIONS+=(-o "$option")
+          done
         fi
-        
+
         # Debug output
-        echo "Input string: ${{ inputs.flow-options }}"
-        echo "Parsed key: $KEY"
-        echo "Parsed value: $VALUE"
         echo "Flow options: ${FLOW_OPTIONS[@]}"
-        
+
         # Run the flow with proper array expansion
         if ${{ inputs.debug }}; then
           cci flow run "${{ inputs.flow-name }}" --org "${{ inputs.org-name }}" "${FLOW_OPTIONS[@]}" --debug | tee cumulusci-flow.log
