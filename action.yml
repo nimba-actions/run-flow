@@ -29,7 +29,17 @@ runs:
           # Read the flow-options into an array, splitting on newlines
           while IFS= read -r line; do
             if [ -n "$line" ]; then
-              FLOW_OPTIONS+=(-o "$line")
+              # Split line into key and value on the first '='
+              key="${line%%=*}"
+              value="${line#*=}"
+
+              # If value is quoted, remove the quotes
+              if [[ "$value" =~ ^\".*\"$ ]]; then
+                value="${value:1:-1}"
+              fi
+
+              # Append the key and value to the FLOW_OPTIONS array
+              FLOW_OPTIONS+=(-o "$key" "$value")
             fi
           done <<< "$FLOW_OPTIONS_INPUT"
         fi
