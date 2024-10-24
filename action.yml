@@ -21,16 +21,17 @@ runs:
     - name: Run Flow
       env:
         CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
+        FLOW_OPTIONS_INPUT: ${{ inputs.flow-options }}
       shell: bash
       run: |
         declare -a FLOW_OPTIONS=()
-        if [ -n "${{ inputs.flow-options }}" ]; then
+        if [ -n "$FLOW_OPTIONS_INPUT" ]; then
           # Read the flow-options into an array, splitting on newlines
-          IFS=$'\n' read -rd '' -a FLOW_OPTIONS_ARRAY <<<"${{ inputs.flow-options }}"
-          for option in "${FLOW_OPTIONS_ARRAY[@]}"; do
-            # Append each option to the FLOW_OPTIONS array with -o
-            FLOW_OPTIONS+=(-o "$option")
-          done
+          while IFS= read -r line; do
+            if [ -n "$line" ]; then
+              FLOW_OPTIONS+=(-o "$line")
+            fi
+          done <<< "$FLOW_OPTIONS_INPUT"
         fi
 
         # Debug output
