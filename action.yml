@@ -1,17 +1,20 @@
 name: Run Flow
-description: 'Execute a named Cumulus flow'
+description: "Execute a named Cumulus flow"
 inputs:
+  github-token:
+    description: "Token for private repository access"
+    required: false
   org-name:
-    description: 'Name of the scratch org or persistent org config to use'
+    description: "Name of the scratch org or persistent org config to use"
     required: true
   flow-name:
-    description: 'Name of the Cumulus flow to execute'
+    description: "Name of the Cumulus flow to execute"
     required: true
   flow-options:
     description: 'Options for the Cumulus flow to include (format: key="value")'
     required: false
   debug:
-    description: 'Display debug logs during Flow Execution'
+    description: "Display debug logs during Flow Execution"
     required: false
     default: false
     type: boolean
@@ -20,7 +23,7 @@ runs:
   steps:
     - name: Run Flow
       env:
-        CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ github.token }}", "email": "cci@github.actions" }'
+        CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ inputs.github-token || github.token }}", "email": "cci@github.actions" }'
         FLOW_OPTIONS_INPUT: ${{ inputs.flow-options }}
       shell: bash
       run: |
