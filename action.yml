@@ -1,7 +1,7 @@
 name: Run Flow
 description: "Execute a named Cumulus flow"
 inputs:
-  github-token:
+  cci-token:
     description: "Token for private repository access"
     required: false
   org-name:
@@ -23,7 +23,7 @@ runs:
   steps:
     - name: Run Flow
       env:
-        CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ inputs.github-token || github.token }}", "email": "cci@github.actions" }'
+        CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ inputs.cci-token || github.token }}", "email": "cci@github.actions" }'
         FLOW_OPTIONS_INPUT: ${{ inputs.flow-options }}
       shell: bash
       run: |
