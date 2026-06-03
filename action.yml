@@ -25,6 +25,9 @@ runs:
       env:
         CUMULUSCI_SERVICE_github: '{"username": "${{ github.actor }}", "token": "${{ inputs.cci-token || github.token }}", "email": "cci@github.actions" }'
         FLOW_OPTIONS_INPUT: ${{ inputs.flow-options }}
+        # Skip the sfdx My Domain DNS resolvability pre-check, which intermittently
+        # raises DomainNotFoundError on CI runners while creating/resolving scratch orgs.
+        SFDX_DISABLE_DNS_CHECK: "true"
       shell: bash
       run: |
         declare -a FLOW_OPTIONS=()
